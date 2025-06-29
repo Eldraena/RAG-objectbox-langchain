@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+import time
 from langchain_groq import ChatGroq
 from langchain_openai import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -29,32 +30,24 @@ prompt=ChatPromptTemplate.from_template(
     {context}
     <context>
     Questions:{input}
-
     """
-
 )
 
-
 ## Vector Enbedding and Objectbox Vectorstore db
-
 def vector_embedding():
-
     if "vectors" not in st.session_state:
         st.session_state.embeddings=OpenAIEmbeddings()
-        st.session_state.loader=PyPDFDirectoryLoader(".docs") ## Data Ingestion
+        st.session_state.loader=PyPDFDirectoryLoader("./docs") ## Data Ingestion
         st.session_state.docs=st.session_state.loader.load() ## Documents Loading
         st.session_state.text_splitter=RecursiveCharacterTextSplitter(chunk_size=1000,chunk_overlap=200)
         st.session_state.final_documents=st.session_state.text_splitter.split_documents(st.session_state.docs[:20])
         st.session_state.vectors=ObjectBox.from_documents(st.session_state.final_documents,st.session_state.embeddings,embedding_dimensions=768)
-
 
 input_prompt=st.text_input("Enter Your Question From Documents")
 
 if st.button("Documents Embedding"):
     vector_embedding()
     st.write("ObjectBox Database is ready")
-
-import time
 
 if input_prompt:
     document_chain=create_stuff_documents_chain(llm,prompt)
@@ -73,14 +66,3 @@ if input_prompt:
         for i, doc in enumerate(response["context"]):
             st.write(doc.page_content)
             st.write("--------------------------------")
-
-
-
-
-
-
-
-
-
-
-
