@@ -1,4 +1,4 @@
-# RAG_objectbox_langchain
+# RAG-objectbox-langchain
 Create a Retrieval Augmented Generation (RAG) app using ObjectBox and LangChain.
 
 ## Install required packages
